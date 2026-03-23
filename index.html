@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather App 🌦️</title>
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Sky Gradient */
+    background: linear-gradient(to top, #87CEEB, #ffffff);
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+input {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 80%;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 1.5rem;
+}
+
+/* Cloud effect */
+body::after {
+    content: "☁️ ☁️ ☁️";
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Weather App 🌦️</h2>
+    <input type="text" id="city" placeholder="Enter City">
+    <br>
+    <button onclick="getWeather()">Check Weather</button>
+    <div id="result"></div>
+</div>
+
+<script>
+const cityInput = document.getElementById('city');
+const resultDiv = document.getElementById('result');
+
+// 🔄 Clear result when input is empty
+cityInput.addEventListener('input', () => {
+    if (cityInput.value.trim() === "") {
+        resultDiv.innerHTML = "";
+    }
+});
+
+async function getWeather() {
+    const city = cityInput.value;
+    const apiKey = 'f609b737cffa988e7ea8ce171ad576a1'; // 🔁 Replace with your key;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    try {
+        resultDiv.innerText = "Loading... 🔍";
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.cod === 200) {
+            resultDiv.innerHTML = `
+                <h3>${data.name}</h3>
+                <p>${data.main.temp}°C</p>
+                <p style="font-size: 0.9rem;">
+                    ${data.weather[0].description}
+                </p>
+            `;
+        } else {
+            resultDiv.innerText = "City not found ❌";
+        }
+
+    } catch (error) {
+        resultDiv.innerText = "Error fetching data ⚠️";
+    }
+}
+</script>
+
+</body>
+</html>
